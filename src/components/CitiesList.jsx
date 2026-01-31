@@ -12,7 +12,6 @@ const CitiesList = () => {
     const fetchCities = async () => {
       try {
         const list = await getCities()
-        console.log('fetched cities:', list)
         if (!mounted) return
         const normalized = list.map((c, idx) => (typeof c === 'string' ? { id: `s-${idx}`, name: c } : c))
         setCities(normalized)
@@ -23,7 +22,6 @@ const CitiesList = () => {
         if (!mounted) return
         setCitiesData(results)
       } catch (err) {
-        console.error('Failed to load cities', err)
         if (mounted) setCities([])
       } finally {
         if (mounted) setLoading(false)
@@ -37,13 +35,12 @@ const CitiesList = () => {
     setLoading(true)
     try {
       const list = await getCities()
-      console.log('refresh cities:', list)
       const normalized = list.map((c, idx) => (typeof c === 'string' ? { id: `s-${idx}`, name: c } : c))
       setCities(normalized)
       const results = await Promise.all(normalized.map((c) => getCurrentWeather(c.name).catch(() => null)))
       setCitiesData(results)
     } catch (err) {
-      console.error(err)
+      alert('Failed to refresh cities')
     } finally {
       setLoading(false)
     }
@@ -57,7 +54,6 @@ const CitiesList = () => {
       setNewCity('')
       await refresh()
     } catch (err) {
-      console.error('Add failed', err)
       alert('Failed to add city')
     }
   }
@@ -78,7 +74,6 @@ const CitiesList = () => {
       closeEditModal()
       await refresh()
     } catch (err) {
-      console.error('Update failed', err)
       alert('Failed to update city')
     }
   }
@@ -91,7 +86,6 @@ const CitiesList = () => {
       closeDeleteModal()
       await refresh()
     } catch (err) {
-      console.error('Delete failed', err)
       alert('Failed to delete city')
     }
   }
