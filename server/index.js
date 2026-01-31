@@ -3,7 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const db = require('./db')
 
-const PORT = process.env.BACKEND_PORT || 4000
+const PORT = process.env.PORT || process.env.BACKEND_PORT || 4000
 
 const app = express()
 app.use(cors())
