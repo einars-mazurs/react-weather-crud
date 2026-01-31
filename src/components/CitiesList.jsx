@@ -120,12 +120,12 @@ const CitiesList = () => {
             <div key={cityObj.id} className="p-3 border border-gray-200 rounded-md bg-white text-center shadow-sm relative">
               <div className="flex items-center justify-center gap-2">
                 {iconUrl && <img src={iconUrl} alt={desc || cityObj.name} className="w-12 h-12" />}
-                <div className="font-semibold text-lg">{cityObj.name}</div>
+                <div className="font-semibold text-lg text-black">{cityObj.name}</div>
               </div>
 
               <div className="text-sm text-gray-600 mt-1">{desc}</div>
 
-              <div className="text-xl mt-2 font-medium">{temp}</div>
+              <div className="text-xl mt-2 font-medium text-black">{temp}</div>
 
               <div className="mt-2">
                 <div className={`overflow-hidden transition-all duration-200 ${expanded[cityObj.id] ? 'max-h-96' : 'max-h-0'}`}>
@@ -169,9 +169,9 @@ function ModalEdit({ state, setState, onChangeName, onSave, onClose }) {
   return (
     <div className="fixed inset-0 bg-gray-500/75 flex items-center justify-center z-50">
       <div className="bg-white rounded-md p-4 w-full max-w-md">
-        <h3 className="font-semibold mb-2">Edit city</h3>
+        <h3 className="font-semibold mb-2 text-black">Edit city</h3>
         <input
-          className="w-full p-2 border rounded mb-3"
+          className="w-full p-2 border rounded mb-3 text-black"
           value={state.name}
           onChange={(e) => onChangeName(e.target.value)}
         />
@@ -190,8 +190,8 @@ function ModalDelete({ state, onCancel, onConfirm }) {
   return (
     <div className="fixed inset-0 bg-gray-500/75 flex items-center justify-center z-50">
       <div className="bg-white rounded-md p-4 w-full max-w-sm">
-        <h3 className="font-semibold mb-2">Delete city</h3>
-        <p className="mb-4">Are you sure you want to delete <strong>{state.name}</strong>?</p>
+        <h3 className="font-semibold mb-2 text-black">Delete city</h3>
+        <p className="mb-4 text-black">Are you sure you want to delete <strong>{state.name}</strong>?</p>
         <div className="flex justify-end gap-2">
           <button className="px-3 py-1 rounded border" onClick={onCancel}>Cancel</button>
           <button className="px-3 py-1 !bg-red-600 text-white rounded" onClick={onConfirm}>Delete</button>
