@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { getCurrentWeather, getCities, addCity, updateCity, deleteCity } from '../api'
+import CityCard from './CityCard'
+import EditModal from './EditModal'
+import DeleteModal from './DeleteModal'
 
 const CitiesList = () => {
   const [cities, setCities] = useState([])
@@ -107,99 +110,30 @@ const CitiesList = () => {
       </div>
 
       <div className="cities-grid grid grid-cols-1 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 gap-4">
-        {cities.map((cityObj, i) => {
-          const data = citiesData[i]
-          const temp = data?.main?.temp != null ? Math.round(data.main.temp) + '°C' : '--'
-          const feels = data?.main?.feels_like != null ? Math.round(data.main.feels_like) + '°C' : '--'
-          const humidity = data?.main?.humidity != null ? data.main.humidity + '%' : '--'
-          const wind = data?.wind?.speed != null ? data.wind.speed + ' m/s' : '--'
-          const desc = data?.weather?.[0]?.description || ''
-          const icon = data?.weather?.[0]?.icon
-          const iconUrl = icon ? `https://openweathermap.org/img/wn/${icon}@2x.png` : null
-          return (
-            <div key={cityObj.id} className="p-3 border border-gray-200 rounded-md bg-white text-center shadow-sm relative">
-              <div className="flex items-center justify-center gap-2">
-                {iconUrl && <img src={iconUrl} alt={desc || cityObj.name} className="w-12 h-12" />}
-                <div className="font-semibold text-lg text-black">{cityObj.name}</div>
-              </div>
-
-              <div className="text-sm text-gray-600 mt-1">{desc}</div>
-
-              <div className="text-xl mt-2 font-medium text-black">{temp}</div>
-
-              <div className="mt-2">
-                <div className={`overflow-hidden transition-all duration-200 ${expanded[cityObj.id] ? 'max-h-96' : 'max-h-0'}`}>
-                  <div className="text-sm text-gray-700 grid grid-cols-2 gap-2">
-                    <div>Feels: <span className="font-semibold">{feels}</span></div>
-                    <div>Humidity: <span className="font-semibold">{humidity}</span></div>
-                    <div>Wind: <span className="font-semibold">{wind}</span></div>
-                    <div></div>
-                  </div>
-                </div>
-                <div className="mt-2">
-                  <button className="text-sm text-gray-600" onClick={() => toggleExpand(cityObj.id)}>
-                    {expanded[cityObj.id] ? 'See less ▲' : 'See more ▼'}
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex justify-center gap-2 mt-3">
-                <button className="text-sm text-blue-600" onClick={() => openEditModal(cityObj.id, cityObj.name)}>Edit</button>
-                <button className="text-sm text-red-600" onClick={() => openDeleteModal(cityObj.id, cityObj.name)}>Delete</button>
-              </div>
-            </div>
-          )
-        })}
+        {cities.map((cityObj, i) => (
+          <CityCard
+            key={cityObj.id}
+            city={cityObj}
+            data={citiesData[i]}
+            expanded={!!expanded[cityObj.id]}
+            onToggleExpand={toggleExpand}
+            onEdit={openEditModal}
+            onDelete={openDeleteModal}
+          />
+        ))}
       </div>
-      <ModalEdit
+      <EditModal
         state={editModal}
-        setState={setEditModal}
         onChangeName={(v) => setEditModal((s) => ({ ...s, name: v }))}
         onSave={submitEdit}
         onClose={closeEditModal}
       />
-      <ModalDelete state={deleteModal} onCancel={closeDeleteModal} onConfirm={confirmDelete} />
+      <DeleteModal state={deleteModal} onCancel={closeDeleteModal} onConfirm={confirmDelete} />
     </div>
   )
 }
 
-// Edit Modal
-function ModalEdit({ state, setState, onChangeName, onSave, onClose }) {
-  if (!state.open) return null
-  return (
-    <div className="fixed inset-0 bg-gray-500/75 flex items-center justify-center z-50">
-      <div className="bg-white rounded-md p-4 w-full max-w-md">
-        <h3 className="font-semibold mb-2 text-black">Edit city</h3>
-        <input
-          className="w-full p-2 border rounded mb-3 text-black"
-          value={state.name}
-          onChange={(e) => onChangeName(e.target.value)}
-        />
-        <div className="flex justify-end gap-2">
-          <button className="px-3 py-1 rounded border" onClick={onClose}>Cancel</button>
-          <button className="px-3 py-1 !bg-blue-600 text-white rounded" onClick={onSave}>Save</button>
-        </div>
-      </div>
-    </div>
-  )
-}
 
-// Delete Modal
-function ModalDelete({ state, onCancel, onConfirm }) {
-  if (!state.open) return null
-  return (
-    <div className="fixed inset-0 bg-gray-500/75 flex items-center justify-center z-50">
-      <div className="bg-white rounded-md p-4 w-full max-w-sm">
-        <h3 className="font-semibold mb-2 text-black">Delete city</h3>
-        <p className="mb-4 text-black">Are you sure you want to delete <strong>{state.name}</strong>?</p>
-        <div className="flex justify-end gap-2">
-          <button className="px-3 py-1 rounded border" onClick={onCancel}>Cancel</button>
-          <button className="px-3 py-1 !bg-red-600 text-white rounded" onClick={onConfirm}>Delete</button>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 export default CitiesList
 
